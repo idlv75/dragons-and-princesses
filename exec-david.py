@@ -18,7 +18,7 @@ number_of_cells = int(cells[0])
 counter = 1
 dragon_dict = {}
 is_married = False
-#
+# Check if the princess is gonna marry you
 for cell in cells[1:]:
     (cell_type, value) = cell.split(" ")
     value = int(value)
