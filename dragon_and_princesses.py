@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import math
 import argparse
 import os.path
@@ -12,6 +14,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', help="path_to_yaml_file",required=True)
 args = parser.parse_args()
 path_to_yaml_file = args.file
+
+if not str(path_to_yaml_file).endswith(".yaml"):
+    print("Error suffix isn't  .yaml")
+    exit()
+
+
 if not os.path.isfile(path_to_yaml_file):
     print("File doesn't exist")
     exit()
@@ -33,6 +41,7 @@ if len(lines) != num_of_cells:
     exit()
 if not lines[-1].startswith('p'):
     print("Error: last line must contain princess")
+    exit()
 
 amount_of_princess = [line.rstrip() for line in lines if "p" in line]
 marriage = False
