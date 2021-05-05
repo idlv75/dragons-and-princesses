@@ -52,8 +52,12 @@ def final(num_of_needed_kiled_dragon):
     final = [-1]
     
     ### check only for the relevant options (which mean from the number of the dragons that we have to kill to get the princess and forward)
-    for idx,options in enumerate(result[num_of_needed_kiled_dragon:max_size-1]):
+    ### logicly: if we can kill 5 dragos and get X coins- we'll also be able to kill 4 dragons and to get less coins (unless the missing dragon will give to us 0 coins)
+    ### therefor we'll stop to check in the first point that we could see that we killed some dragons
+    for idx, options in reversed( list( enumerate( result[num_of_needed_kiled_dragon:max_size-1] ) )):
+        found_somthing=False
         if options != []:
+            found_somthing=True
             for x in options:
                 ###  if we found a better solution.
                 if x[0] > final[0]:    
@@ -61,7 +65,9 @@ def final(num_of_needed_kiled_dragon):
                 ###  if we have more than 1 option - push only the postions of the dragons    
                 elif x[0] == final[0]:
                     final.append(x[1])
-    
+        if found_somthing:
+            break
+        
     if -1 in final:
         print(-1)
         return
@@ -86,13 +92,19 @@ def starting(steps):
        
     ### go over the steps without the last position in which we have the wanted princess 
     for idx,step in enumerate(steps[1:max_size]):
-        if 'd' in step:
+        if 'd ' in step:
             dragon(int(step.replace('d ', '')), idx+1,idx+1)
-        else:
+        elif 'p ' in step:
             princess(int(step.replace('p ', '')))
+        else:
+            raise Exception('unvalid option ' + step + ' in the index '+ str(idx) + '\nmaybe you forgot the space?')
     
     final(num_of_needed_kiled_dragon)
-        
+ 
+def check_file(file):
+    if not (os.path.exists(file)):
+        raise Exception('could not find path/file '+ file)
+     
     
 if __name__ == '__main__':
     try:
@@ -101,7 +113,9 @@ if __name__ == '__main__':
         #steps = [7, 'd 10', 'd 10', 'p 2','d 1', 'd 1','p 4']
         #steps = [7, 'd 10', 'd 10', 'p 2','d 1', 'd 1','p 2']
         
-        with open("data.yaml", 'r') as stream:
+        file_name=input()
+        check_file(file_name)        
+        with open(file_name, 'r') as stream:
             steps = yaml.safe_load(stream)
         max_size = steps[0]-1
         starting(steps)
