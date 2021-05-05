@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
 
 yaml_file = sys.argv[1]
 cells = read_file(yaml_file)
-number_of_cells = int(cells[0])
+number_of_cells = cells[0]
 counter = 1
 dragon_dict = {}
 is_married = False
@@ -30,7 +30,7 @@ for cell in cells[1:]:
         # value is beauty
         dragons_killed = len(dragon_dict.values())
         if dragons_killed >= value:
-            if counter != (number_of_cells - 1):
+            if counter != (int(number_of_cells) - 1):
                 # this is not the last princess we need to undo dragon kills
                 while len(dragon_dict.values()) >= value:
                     dragon_to_unkill = min(dragon_dict, key=dragon_dict.get)
