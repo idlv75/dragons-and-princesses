@@ -1,0 +1,22 @@
+count: 17
+opts:
+ - 'd 10'
+ - 'd 10'
+ # if this princess will be the last one -> we'll get only 1 result
+ - 'p 50'
+ - 'd 10'
+ - 'd 10'
+ - 'd 0'
+ - 'd 3'
+ # if this will be the last princess we'll have 2 results since 1 dragon have 0 coins
+ - 'p 1'
+ # if this princess will be the last one - we'll get -1 since the previous princess will delete all of the options
+ - 'p 8'
+ # if this princess will be the last one - we'll get -1 since she want more dragons that we can ever have in this point
+ - 'p 500'
+ - 'd 10'
+ - 'd 10'
+ - 'p 2'
+ - 'd 1'
+ - 'd 1'
+ - 'p 1'
