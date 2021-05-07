@@ -8,7 +8,10 @@ Coded in Python 2 !!!
 # Imports
 ######################
 import sys
-
+import subprocess
+# Make sure yaml package is installed
+subprocess.check_call([sys.executable, "-m", "pip", "install", "pyyaml"])
+import yaml
 
 ######################
 # Constants
@@ -22,6 +25,15 @@ MIN_NUM_OF_COINS = 1
 MAX_NUM_OF_COINS = 10**4
 
 
+def yaml_loader(file_path):
+    """
+    Loads a yaml file
+    """
+    with open(file_path, "r") as file_descriptor:
+        yaml_file_data = yaml.safe_load(file_descriptor)
+    return yaml_file_data
+
+
 # Extracting input
 try:
     yaml_file_path = sys.argv[1]
@@ -32,12 +44,12 @@ if not yaml_file_path.endswith(".yaml"):
     raise Exception("Bad input error: input file must be yaml file")
 
 try:
-    input_file = open(yaml_file_path, 'r')
+    input_data = yaml_loader(yaml_file_path)
 except:
     raise Exception("Couldn't open input file")
 
-cells = input_file.readlines()
-num_of_cells = len(cells)
+cells = list(input_data.values())[1]
+num_of_cells = list(input_data.values())[0] - 1
 
 # Validating input
 if not cells[-1].startswith('p'):
@@ -47,9 +59,8 @@ if num_of_cells > MAX_NUM_OF_CELLS or num_of_cells < MIN_NUM_OF_CELLS:
 if num_of_cells != len(cells):
     raise Exception("Bad input error: first line of input must be equal to the number of lines")
 
-cells.pop(0)
 # Initializations
-current_cell = 1
+current_cell = 0
 slain_dragons = {}
 '''
 slain_dragons dictionary will include number of cell as key and amount of gold coins the dragon holds as value:
