@@ -1,10 +1,10 @@
 import sys
-
+import yaml
 
 # Read inputs file
 def read_file(file_path):
-    with open(file_path) as file:
-        return file.readlines()
+    with open(file_path, 'r') as f:
+        return yaml.safe_load(f)
 
 
 # Provide file as argument
@@ -13,24 +13,24 @@ if len(sys.argv) < 2:
     exit()
 
 yaml_file = sys.argv[1]
-cells = read_file(yaml_file)
-number_of_cells = cells[0]
+input =  read_file(yaml_file)
+number_of_cells = int(input["numberOfCells"])
 counter = 1
 dragon_dict = {}
 is_married = False
-# Check if the princess is gonna marry you
-for cell in cells[1:]:
-    (cell_type, value) = cell.split(" ")
-    value = int(value)
-    if cell_type == "d":
+#
+for cell in input['cells']:
+    cell_type = cell['type']
+    value = int(cell['value'])
+    if cell_type == "D":
         # value is gold
         # we kill the dragon here
         dragon_dict[str(counter + 1)] = value
-    if cell_type == "p":
+    if cell_type == "P":
         # value is beauty
         dragons_killed = len(dragon_dict.values())
         if dragons_killed >= value:
-            if counter != (int(number_of_cells) - 1):
+            if counter != (number_of_cells - 1):
                 # this is not the last princess we need to undo dragon kills
                 while len(dragon_dict.values()) >= value:
                     dragon_to_unkill = min(dragon_dict, key=dragon_dict.get)
@@ -46,3 +46,4 @@ if is_married:
     print(' '.join(dragon_dict.keys()))
 else:
     print(-1)
+    

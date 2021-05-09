@@ -1,6 +1,13 @@
-6
-d 10
-d 12
-p 2
-d 1
-p 2
+---
+numberOfCells: 6
+cells:
+- type: D
+  value: 10
+- type: D
+  value: 12
+- type: P
+  value: 2
+- type: D
+  value: 1
+- type: P
+  value: 2
