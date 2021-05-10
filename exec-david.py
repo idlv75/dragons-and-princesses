@@ -1,7 +1,7 @@
 import sys
 import yaml
 
-# Read inputs file
+# Read input file
 def read_file(file_path):
     with open(file_path, 'r') as f:
         return yaml.safe_load(f)
@@ -12,13 +12,15 @@ if len(sys.argv) < 2:
     print("Please provide file as argument")
     exit()
 
+# Read input file as Yaml format
 yaml_file = sys.argv[1]
 input =  read_file(yaml_file)
 number_of_cells = int(input["numberOfCells"])
 counter = 1
 dragon_dict = {}
 is_married = False
-#
+
+# Check if princess gonna marry you
 for cell in input['cells']:
     cell_type = cell['type']
     value = int(cell['value'])
@@ -39,6 +41,8 @@ for cell in input['cells']:
                 # we got married!
                 is_married = True
     counter += 1
+
+
 # Print the values
 if is_married:
     print(sum(dragon_dict.values()))
