@@ -1,6 +1,10 @@
 import heapq
-import yaml
-import sys
+try:
+    import yaml
+except ModuleNotFoundError:
+    import pip
+    pip.main(['install', 'PyYaml'])
+    import yaml
 
 
 def read_yaml(input_path):
@@ -67,4 +71,4 @@ class DragonsAndPrincesses:
 
 
 if __name__ == "__main__":
-    DragonsAndPrincesses(sys.argv[1]).dragons_and_princesses()
+    DragonsAndPrincesses('input_file/input.yml').dragons_and_princesses()
