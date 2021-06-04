@@ -29,7 +29,7 @@ def parse_yaml(file=None) -> []:
 
 
 def find_match(cells):
-    if cells is not list:
+    if type(cells) is not list:
         return
 
     dragons = queue.PriorityQueue()
