@@ -23,7 +23,7 @@ def parse_yaml(file=None) -> []:
             data = line.split()
             if data[1] == "d":
                 cells.append(Dragon(data[2], idx))
-            else:
+            if data[1] == "p":
                 cells.append(Princess(data[2]))
     return cells
 
