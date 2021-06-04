@@ -1,5 +1,6 @@
 import os
 import unittest
+from run import *
 
 TEST_DATA_FILENAME = os.path.join(os.path.dirname(__file__), 'input.yml')
 
@@ -19,3 +20,7 @@ class TestMain(unittest.TestCase):
 
                 if data[1] == "p":
                     self.assertNotAlmostEqual(int(data[2]), 0)
+
+    def test_parse_output(self):
+        cells = parse_yaml(TEST_DATA_FILENAME)
+        self.assertIsNot(cells, list)

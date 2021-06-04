@@ -1,5 +1,6 @@
 import fileinput
 import queue
+import sys
 from dataclasses import dataclass, field
 
 
@@ -7,9 +8,16 @@ def main():
     find_match(parse_yaml())
 
 
-def parse_yaml() -> []:
+def parse_yaml(file=None) -> []:
+    if file is None:
+        try:
+            file = sys.argv[1]
+        except Exception as e:
+            print("No input file name after the executed script, Error:", e)
+            return
+
     cells = []
-    with fileinput.input() as lines:
+    with fileinput.input(file) as lines:
         next(lines)
         for idx, line in enumerate(lines, start=2):
             data = line.split()
@@ -21,6 +29,9 @@ def parse_yaml() -> []:
 
 
 def find_match(cells):
+    if cells is not list:
+        return
+
     dragons = queue.PriorityQueue()
     coins = 0
     positions = []
