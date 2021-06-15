@@ -1,4 +1,5 @@
 import heapq
+import yaml
 
 
 # The class represents a cell in the map.
@@ -82,18 +83,22 @@ class DragonAndPrincesses:
 
     # Fills the class's cell_array with data from a file. The function gets the file's name as a parameter.
     def get_map_from_file(self, file_name):
-        file = open(file_name)
-        cell_nums = int(file.readline())
+        data = ""
+
+        with open(file_name, "r") as file:
+            data = yaml.load(file)
+
+        if data == "":
+            return
+
+        data = data.split(" ")
+        cell_nums = int(data[0])
 
         for i in range(cell_nums - 1):
-            line = file.readline()
-            line = line.split(' ')
-            cell_type = line[0]
-            value = int(line[1])
+            cell_type = data[2 * i + 1]
+            value = int(data[2 * i + 2])
             cell = CellInfo(i, value, cell_type)
             self._cell_array.append(cell)
-
-        file.close()
 
     # The function solve the map, and returns a string represents the solution.
     def solution(self):
@@ -167,7 +172,7 @@ class DragonAndPrincesses:
 
 def main():
     dap = DragonAndPrincesses()
-    dap.get_map_from_file("input.txt")
+    dap.get_map_from_file("input1.txt")
     print(dap.solution())
 
 
