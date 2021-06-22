@@ -12,3 +12,5 @@ Provide a solution for the CodeForces problem [#548](https://codeforces.com/prob
 - Code Style
 - Immutability
 - Unittests
+
+test
