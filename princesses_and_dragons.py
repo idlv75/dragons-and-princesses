@@ -1,11 +1,11 @@
 import sys
 import argparse
 import os
-import yaml
 
 # const
 MAX_NUMBER_OF_CELLS = 200000
-MIN_NUMBER_OF_CELLS = 1
+MIN_NUMBER_OF_CELLS = 2
+MIN_NUMBER_OF_COINS = 1
 MAX_NUMBER_OF_COINS = 10000
 PRINCESS = 'p'
 DRAGON = 'd'
@@ -19,7 +19,7 @@ def cast_to_int(var: str) -> int:
     """
     try:
         var = int(var)
-        if var < MIN_NUMBER_OF_CELLS or var > MAX_NUMBER_OF_CELLS:
+        if var < MIN_NUMBER_OF_COINS or var > MAX_NUMBER_OF_CELLS:
             raise Exception
     except:
         print(f"invalid input {var}")
@@ -27,23 +27,46 @@ def cast_to_int(var: str) -> int:
 
     return var
 
-def parse_input_data(input_data: list) -> list:
+def parse_and_validate_input_data(input_file: str) -> list:
     """
-    this func receives input data from yaml file and returns list of cells
-    :param input_data: list from yaml file
-    :return: list of cells, where first item is number of cells and other are tuples:
+    this func receives path to yaml file, validate input and returns list of cells
+    :param input_file: str: path to yaml file
+    :return: in case of valid input: list of cells, where first item is number of cells and other are tuples:
              d, num of coins or p, beauty range
+             in case of invalid input: exits with return value 1
     """
     cells = []
-    for item in input_data:
-        if len(cells):
-            # this is not the first cell, append tuple
-            a, b = item.split()
-            cells.append((a, cast_to_int(b)))
-        else:
-            # this is the first cell, append int
-            n = cast_to_int(item)
-            cells.append(n)
+    try:
+        with open(input_file, 'r') as input_data:
+            for item in input_data:
+                if len(cells):
+                    # this is not the first cell, append tuple
+                    a, b = item.split()
+                    cells.append((a, cast_to_int(b)))
+                else:
+                    # this is the first cell, append int
+                    n = cast_to_int(item)
+                    cells.append(n)    
+    except Exception as e:
+        print(f"error while opening file {input_file}")
+        print(e)
+        sys.exit(1)
+
+    # length check
+    n = cells[0]
+    if len(cells) != n:
+        print(f"invalid number of cells: {n} instead {len(cells)}")
+        sys.exit(1)
+
+    # min number of cells check    
+    if len(cells) < MIN_NUMBER_OF_CELLS:
+        print(f"invalid number of cells: {n}, it should be greater than {MIN_NUMBER_OF_CELLS}")
+        sys.exit(1)
+
+    # check that there is a princess in the last cell
+    if cells[n-1][0] != PRINCESS:
+        print("there is no princess in last cell")
+        sys.exit(1)
 
     return cells
 
@@ -118,27 +141,8 @@ def parse_args() -> str:
 if __name__ == "__main__":
     # parsing input
     input_file = parse_args()
-    try:
-        with open(input_file, 'r') as stream:
-            input_data = yaml.safe_load(stream)
-            cells = parse_input_data(input_data)
-    except Exception as e:
-        print(f"error while opening file {parse_args.yaml_file}")
-        print(e)
-        sys.exit(1)
-
-    # length check
-    n = cells[0]
-    if len(cells) != n:
-        print(f"invalid number of cells: {n} instead {len(cells)}")
-        sys.exit(1)
-
-    # check that there is a princess in the last cell
-    if cells[n-1][0] != PRINCESS:
-        print("there is no princess in last cell")
-        sys.exit(1)
-
-    res = get_princess_and_coins(n, cells, coins=0, defeated_dragons=0, i=2)
+    cells = parse_and_validate_input_data(input_file)
+    res = get_princess_and_coins(cells[0], cells, coins=0, defeated_dragons=0, i=2)
 
     if res[0] > 0:
         # success
