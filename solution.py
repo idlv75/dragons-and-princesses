@@ -4,24 +4,6 @@ import numpy as np
 import yaml
 
 
-# This function helps test run function - and not relevant to the question
-def test(n):
-    val_array = np.zeros(n)
-    title_arr = ['' for i in range(n)]
-    title_arr[0] = 'p'
-    for i in range(1, n):
-        x = random.uniform(0, 1)
-        if x < 0.2 or i == n - 1:
-            title_arr[i] = 'p'
-        else:
-            title_arr[i] = 'd'
-        val_array[i] = float(random.randint(1, 5))
-
-    print(title_arr)
-    print(val_array)
-    run(title_arr, val_array)
-
-
 '''
 This function parses the yaml input file, assuming the input is correct The parsing works in the following way: 
 given a correct file that defines len = n, the function returns two arrays of length n - cell_value_arr (beauty/num
@@ -61,6 +43,21 @@ def get_previous_princess_index(index, title_arr):
         if title_arr[i] == 'p':
             return i
     return 0
+
+
+'''
+index - an index of a princess in the input arrays
+title_arr - cell_title_arr (input)
+output_array - this array contains the lower_bound and upper_bound for each princess
+this functions returns the index of the previous princess with non empty lower bound (explanation will follow)
+'''
+
+
+def get_non_empty_prev_princess_index(current_index, cell_title_arr, output_array):
+    prev_princess_index = get_previous_princess_index(current_index, cell_title_arr)
+    while len(output_array[prev_princess_index][0]) == 0 and prev_princess_index != 0:
+        prev_princess_index = get_previous_princess_index(prev_princess_index, cell_title_arr)
+    return prev_princess_index
 
 
 '''
@@ -180,39 +177,41 @@ lower_bound and upper_bound of output_array[i], and returns it
 
 
 def max_coins_per_index(i, cell_title_arr, cell_value_arr, output_array):
+    upper_bound, lower_bound = [], []
     copy_value_arr = np.copy(cell_value_arr)
     # first index no dragons seen yet
     if i == 0:
-        return [], []
+        return upper_bound, lower_bound
     else:
         # if cell is a dragon, do nothing
         if cell_title_arr[i] == 'p':
             # get prev_princess_index that it's lower_bound is not empty
-            prev_princess_index = get_previous_princess_index(i, cell_title_arr)
-            while len(output_array[prev_princess_index][0]) == 0 and prev_princess_index != 0:
-                prev_princess_index = get_previous_princess_index(prev_princess_index, cell_title_arr)
+            prev_princess_index = get_non_empty_prev_princess_index(i, cell_title_arr, output_array)
             prev_lower_bound = output_array[prev_princess_index][0]
             dragons_in_range_title = cell_title_arr[prev_princess_index:i]
             # if there are not enough dragons between current princess and previous princess to marry current
             # princess, return empty bounds
             if len(prev_lower_bound) != 0 and \
                     len(prev_lower_bound) + dragon_count(dragons_in_range_title) - 1 < copy_value_arr[i]:
-                return [], []
+                return upper_bound, lower_bound
             elif len(prev_lower_bound) == 0 and dragon_count(dragons_in_range_title) < copy_value_arr[i]:
-                return [], []
+                return upper_bound, lower_bound
 
-            # calculate bounds
+            # calculate lower bound
             lower_bound = calculate_princess_lower_bound(prev_lower_bound, copy_value_arr, cell_title_arr,
                                                          i, copy_value_arr[i], prev_princess_index)
-            upper_bound = calculate_princess_upper_bound(prev_lower_bound, copy_value_arr, cell_title_arr,
-                                                         dragon_count(dragons_in_range_title), i, prev_princess_index)
+            # calculate upper bound only for last princess, to conserve space
+            if i == len(cell_value_arr) - 1:
+                upper_bound = calculate_princess_upper_bound(prev_lower_bound, copy_value_arr, cell_title_arr,
+                                                             dragon_count(dragons_in_range_title), i,
+                                                             prev_princess_index)
+            else:
+                upper_bound = []
             # if lower bound is insufficient - return empty bound (this condition may be unnecessary)
             if len(lower_bound) < copy_value_arr[i]:
                 return [], []
-            else:
-                # return bounds
-                return lower_bound, upper_bound
-    return [], []
+
+    return lower_bound, upper_bound
 
 
 '''
@@ -255,8 +254,7 @@ def run(title_arr, value_arr):
 main parses the input and runs run()
 '''
 
-
 if __name__ == '__main__':
-    title_arr, value_arr = parse_input_file("input_file.yaml")
-    if len(title_arr) != 0:
-        run(title_arr, value_arr)
+    input_title_arr, input_value_arr = parse_input_file("input_file.yaml")
+    if len(input_title_arr) != 0:
+        run(input_title_arr, input_value_arr)
