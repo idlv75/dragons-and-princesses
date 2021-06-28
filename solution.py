@@ -1,5 +1,14 @@
-import yaml
+import subprocess, os, sys
 from operator import attrgetter
+
+
+try:
+    import yaml
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'pyyaml'])
+finally:
+    import yaml
+
 
 class Dragon:
     def __init__(self, cell_number, coins):
@@ -34,13 +43,11 @@ def find_path(input_file):
     steps = data['steps']
     Dragons.target_value = steps.pop().split()[1]
     cell_num = 2
-    summary_coins = 0
     for step in steps:
         type, value = step.split()
         if type == "d":
             dragon = Dragon(cell_num, value)
             dragons.dragons_queue.append(dragon)
-            summary_coins += int(dragon.coins)
         else:
             while dragons and len(dragons.dragons_queue) >= int(value):
                 dragons.remove_dragon()
@@ -51,12 +58,26 @@ def find_path(input_file):
     else:
         print (dragons.dragons_money())
         print (len(dragons.dragons_queue))
+        dragons_cells_str = ""
         for dragon in dragons.dragons_queue:
-            print (dragon.cell_number, end= " ")
+            dragons_cells_str += str(dragon.cell_number) + " "
+        print (dragons_cells_str)
     return dragons.dragons_queue
 
+
+def read_input():
+    if len(sys.argv) == 2:
+        input_file = sys.argv[1]
+        if os.path.isfile(input_file):
+            return input_file
+        else:
+            raise Exception('Parameter {} is not a file'.format(input_file))
+    else:
+        raise Exception("Please enter input file (python solution.py input1.yaml)")
+
 if __name__ == '__main__':
-    find_path('input1.yaml')
+    find_path(read_input())
+
 
 
 
