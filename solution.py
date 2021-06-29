@@ -1,7 +1,5 @@
 import sys
 import numpy as np
-import yaml
-
 
 '''
 This function parses the yaml input file, assuming the input is correct The parsing works in the following way: 
@@ -10,24 +8,54 @@ coins in each cell) and cell_title_arr (princess or dragon)
 '''
 
 
+def file_is_empty(file_name):
+    try:
+        file = open(file_name, "r")
+        return len(file.read()) == 0
+    except FileNotFoundError as e:
+        print("File not found - type in the correct file name and place the file in the correct folder")
+        return
+
+
 def parse_input_file(file_name):
-    with open(file_name) as file:
-        input_str_arr = yaml.load(file, Loader=yaml.SafeLoader).split()
-        array_len = int(input_str_arr[0])
-        cell_title_arr = ['' for i in range(array_len)]
-        # Entered first array value as a princess with beauty = 0, for comfort
-        cell_value_arr = np.zeros(array_len)
-        cell_title_arr[0] = 'p'
-        try:
-            for i in range(1, len(input_str_arr)):
-                if input_str_arr[i] == 'd' or input_str_arr[i] == 'p':
-                    cell_title_arr[int(i / 2) + 1] = input_str_arr[i]
-                else:
-                    cell_value_arr[int(i / 2)] = int(input_str_arr[i])
-            return cell_title_arr, cell_value_arr
-        except IndexError:
-            print("Incorrect value entered as array length")
-            return [], []
+    if file_is_empty(file_name) is None:
+        return
+    elif file_is_empty(file_name):
+        print("Empty input file")
+        return
+    try:
+        file = open(file_name, "r")
+    except Exception as e:
+        print(e)
+        return
+    line = file.readline()
+    try:
+        array_len = int(line)
+    except:
+        print("Missing definition of cell number")
+        return
+    if array_len == 0:
+        return [], []
+    title_arr = ['' for i in range(array_len)]
+    value_arr = np.zeros(array_len)
+    title_arr[0] = 'p'
+    i = 1
+    while line and i < array_len:
+        line = file.readline().split()
+        if len(line) < 2:
+            print("Missing values in input")
+            return
+
+        if line[0] == 'd':
+            title_arr[i] = 'd'
+        else:
+            title_arr[i] = 'p'
+        value_arr[i] = int(line[1])
+        i += 1
+    if len(file.readline()) != 0:
+        print("Cell numbers does not match input")
+        return
+    return title_arr, value_arr
 
 
 '''
@@ -254,6 +282,13 @@ main parses the input and runs run()
 '''
 
 if __name__ == '__main__':
-    input_title_arr, input_value_arr = parse_input_file("input_file.yaml")
-    if len(input_title_arr) != 0:
-        run(input_title_arr, input_value_arr)
+    input_file = input("Enter file name: for example input_file.yaml\n After output is printed, press Enter\n")
+    parser_val = parse_input_file(input_file)
+    if parser_val is not None:
+        input_title_arr, input_value_arr = parser_val
+        if len(input_title_arr) != 0:
+            run(input_title_arr, input_value_arr)
+        else:
+            # No princess
+            print(-1)
+    input("")
