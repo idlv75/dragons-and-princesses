@@ -1,10 +1,10 @@
 #!/usr/bin/python
-
 try:
     import yaml
+    import argparse
 except ModuleNotFoundError:
-    print("The 'yaml' module is not installed.")
-    print("Installing it now...")
+    print("The 'yaml' or 'argparse' module is not installed.")
+    print("Installing them now...")
 
     try:
         import pip
@@ -17,12 +17,23 @@ except ModuleNotFoundError:
         # Install pyyaml using pip
         pip.main(["install", "pyyaml"])
         print("The 'pyyaml' module has been successfully installed.")
+
+        # Install argparse using pip
+        pip.main(["install", "argparse"])
+        print("The 'argparse' module has been successfully installed.")
     except Exception as e:
-        print(f"An error occurred while installing 'pyyaml': {e}")
+        print(f"An error occurred while installing 'pyyaml' and 'argparse': {e}")
         exit(1)
 
+# Create an argument parser
+parser = argparse.ArgumentParser(description="Process a YAML file containing parameters/inputs")
+parser.add_argument('yaml_file', type=str, help="Path to the YAML file containing parameters")
+
+# Parse the command-line arguments
+inputs_file = parser.parse_args()
+
 # Read input from a YAML file
-with open('parameters.yaml', 'r') as yaml_file:
+with open(inputs_file.yaml_file, 'r') as yaml_file:
     data = yaml.safe_load(yaml_file)
 
 # Extract relevant information from the list of dictionaries
