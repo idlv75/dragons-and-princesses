@@ -1,5 +1,25 @@
 #!/usr/bin/python
-import yaml
+
+try:
+    import yaml
+except ModuleNotFoundError:
+    print("The 'yaml' module is not installed.")
+    print("Installing it now...")
+
+    try:
+        import pip
+    except ModuleNotFoundError:
+        print("The 'pip' module is not installed.")
+        print("Please install 'pip' manually and then run this script again.")
+        exit(1)
+
+    try:
+        # Install pyyaml using pip
+        pip.main(["install", "pyyaml"])
+        print("The 'pyyaml' module has been successfully installed.")
+    except Exception as e:
+        print(f"An error occurred while installing 'pyyaml': {e}")
+        exit(1)
 
 # Read input from a YAML file
 with open('parameters.yaml', 'r') as yaml_file:
