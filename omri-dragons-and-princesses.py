@@ -22,7 +22,7 @@ except ModuleNotFoundError:
         pip.main(["install", "argparse"])
         print("The 'argparse' module has been successfully installed.")
     except Exception as e:
-        print(f"An error occurred while installing 'pyyaml' and 'argparse': {e}")
+        print('An error occurred while installing pyyaml and argparse: '+str({e}))
         exit(1)
 
 # Create an argument parser
@@ -85,10 +85,8 @@ backtrack(1, 0, [])
 
 #if max_gold > 0:
 if len(dragons_to_kill) > 0:    
-    print(f'max-gold:{max_gold}')
-    print(f'num of dragons to kill: {len(dragons_to_kill)}')
-    print(f'cells-to-kill: {dragons_to_kill}')
+    print('max-gold:' + str(max_gold))
+    print('num of dragons to kill: '+str(len(dragons_to_kill)))
+    print('cells-to-kill: '+str(dragons_to_kill))
 else:
     print(-1)
-
- 
